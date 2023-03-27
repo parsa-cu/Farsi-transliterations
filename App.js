@@ -7,7 +7,7 @@ import { NativeBaseProvider, Box, Button, Input, ScrollView, TextArea } from "na
 import { setupURLPolyfill } from 'react-native-url-polyfill';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import * as Clipboard from 'expo-clipboard';
-import { GiftedChat, Bubble, Send } from 'react-native-gifted-chat'
+import { GiftedChat, Bubble, Send, InputToolbar } from 'react-native-gifted-chat'
 //import react native vector icons
 import Ionicons from '@expo/vector-icons/Ionicons';
 
@@ -39,31 +39,24 @@ export default function App() {
 
       user: {
         _id: 2,
-        name: 'Open AI'
+        name: 'Finglish',
+        avatar: 'https://github.com/parsa-cu/parsa-cu.github.io/blob/main/Logo.jpg?raw=true'
       }
     }
   ]);
 
-  // helper method that is sends a message
-  function handleSend(newMessage = []) {
-    setMessages(GiftedChat.append(messages, newMessage));
-  }
-  const [textInput, setTextInput] = useState('');
   const [answer, setAnswer] = useState('');
+  const [textInput, setTextInput] = useState('');
 
 
 
-  const copyToClipboard = () => {
-    Clipboard.setStringAsync(answer);
-    console.log(Clipboard.getStringAsync())
-  }
 
   const askOpenAi = async (messageText) => {
     const prompt = `Convert my input from Finglish to Farsi. Don't translate english to farsi, but only convert the english letters to farsi: ${messageText}`;
     const response = await openai.createChatCompletion({
       model: "gpt-3.5-turbo",
       messages: [{ role: 'user', content: prompt }],
-      max_tokens: 2000,
+      max_tokens: 200,
       temperature: 0,
       stream: false,
     });
@@ -74,13 +67,25 @@ export default function App() {
       {
         _id: Math.random().toString(36).substring(7),
         text: answer,
+        createdAt: new Date().getTime(),
         user: {
           _id: 2,
-          name: 'Test User'
+          name: 'Finglish',
+          avatar: 'https://github.com/parsa-cu/parsa-cu.github.io/blob/main/Logo.jpg?raw=true'
+        }
+      },
+      {
+        _id: Math.random().toString(36).substring(7),
+        text: messageText,
+        createdAt: new Date().getTime(),
+        user: {
+          _id: 1,
+          name: 'User'
         }
       }
+
     ]));
-    copyToClipboard();
+    Clipboard.setStringAsync(answer);
   };
   function renderBubble(props) {
     return (
@@ -93,10 +98,19 @@ export default function App() {
             backgroundColor: '#E74C3C'
           },
           left: {
-            backgroundColor: '#84A59D'
+            backgroundColor: '#2C3E50'
           }
         }}
         textStyle={{
+          right: {
+            color: '#fff'
+          },
+          left: {
+            color: '#fff'
+          }
+        }}
+        //date style
+        timeTextStyle={{
           right: {
             color: '#fff'
           },
@@ -110,10 +124,12 @@ export default function App() {
 
   function renderSend(props) {
     const handleSend = useCallback(() => {
-      if (props.text && props.text.trim().length > 0) {
-        console.log(props.text)
-        askOpenAi(props.text.trim());
-      }
+
+      // if (props.text && props.text.trim().length > 0) {
+      //   askOpenAi(props.text.trim());
+      // }
+      askOpenAi(textInput);
+      setTextInput('');
     }, [props]);
 
     return (
@@ -125,44 +141,49 @@ export default function App() {
     );
   }
 
+  const renderInputToolbar = (props) => {
+    return (
+      <InputToolbar
+        {...props}
+        containerStyle={{
+          backgroundColor: '#333', // set the background color for the input toolbar
+        }}
+        primaryStyle={{
+          alignItems: 'center',
+          backgroundColor: '#333', // set the background color for the text input
+        }}
+      />
+    );
+  }
+  const bg = "coolGray.800";
+
   return (
     
     <NativeBaseProvider>
-      <GiftedChat
-        messages={messages}
-        onSend={newMessage => handleSend(newMessage)}
-        user={{ _id: 1 }}
-        renderBubble={renderBubble}
-        placeholder='Type your message here...'
-        alwaysShowSend
-        renderSend={renderSend}
-      />
-
-      <SafeAreaView>
-          {/* <View style={styles.textField}>
-          <ScrollView>
-            {answer && (<Text>{answer}</Text>)}
-          </ScrollView>
-            </View>
-        <TextArea
-          autoCorrect={false}
-          autoCapitalize="none"
-          placeholder="Enter your question"
-          value={textInput}
-          onChangeText={setTextInput}
-        
+      <SafeAreaView style={{ flex: 1 }}>
+        <GiftedChat
+          messages={messages}
+          textInputProps={{
+            autoCorrect: false,
+            value: textInput,
+            onChangeText: setTextInput
+          }}
+          onSend={newMessage => {
+            handleSend(newMessage);
+            //clear text input
+          }}
+          user={{ _id: 1 }}
+          renderBubble={renderBubble}
+          placeholder='Type your message here...'
+          alwaysShowSend
+          renderSend={renderSend}
+          // renderInputToolbar={renderInputToolbar}
         />
-          <Button
-            title="Ask OpenAI"
-            onPress={askOpenAi}
-            disabled={!textInput}
-          >
-            Ask OpenAI
-          </Button>
- */}
 
-          <StatusBar style="auto" />
-      </SafeAreaView>
+        <StatusBar style="auto" />
+        </SafeAreaView>
+     
+
       
 
     </NativeBaseProvider>
