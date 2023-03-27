@@ -52,6 +52,18 @@ export default function App() {
 
 
   const askOpenAi = async (messageText) => {
+    setMessages(previousMessages => GiftedChat.append(previousMessages, [
+      {
+        _id: Math.random().toString(36).substring(7),
+        text: messageText,
+        createdAt: new Date().getTime(),
+        user: {
+          _id: 1,
+          name: 'User'
+        }
+      }
+    ]));
+
     const prompt = `Convert my input from Finglish to Farsi. Don't translate english to farsi, but only convert the english letters to farsi: ${messageText}`;
     const response = await openai.createChatCompletion({
       model: "gpt-3.5-turbo",
@@ -74,15 +86,7 @@ export default function App() {
           avatar: 'https://github.com/parsa-cu/parsa-cu.github.io/blob/main/Logo.jpg?raw=true'
         }
       },
-      {
-        _id: Math.random().toString(36).substring(7),
-        text: messageText,
-        createdAt: new Date().getTime(),
-        user: {
-          _id: 1,
-          name: 'User'
-        }
-      }
+
 
     ]));
     Clipboard.setStringAsync(answer);
