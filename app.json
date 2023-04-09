@@ -1,6 +1,6 @@
 {
   "expo": {
-    "name": "Finglish - Finglish to Farsi Translator",
+    "name": "Finglish",
     "slug": "Farsi-transliterations",
     "version": "1.0.0",
     "orientation": "portrait",
@@ -15,12 +15,25 @@
       "**/*"
     ],
     "ios": {
-      "supportsTablet": true
+      "supportsTablet": true,
+      "bundleIdentifier": "com.bgproduction.FinglishTranslator"
     },
     "android": {
+      "package": "com.bgproduction.FinglishTranslator"
     },
     "web": {
       "favicon": "./assets/favicon.png"
+    },
+    "extra": {
+      "eas": {
+        "projectId": "3028e0f0-21df-4e9e-a134-c0335950f8df"
+      }
+    },
+    "runtimeVersion": {
+      "policy": "sdkVersion"
+    },
+    "updates": {
+      "url": "https://u.expo.dev/3028e0f0-21df-4e9e-a134-c0335950f8df"
     }
   }
 }

@@ -1,8 +1,8 @@
 import { StatusBar } from 'expo-status-bar';
 import React, { useState, useEffect, useCallback } from 'react';
-import { StyleSheet, Text, View } from 'react-native';
+import { StyleSheet, Text, View, Alert } from 'react-native';
 const { Configuration, OpenAIApi } = require("openai");
-import { NativeBaseProvider, Box, Button, Input, ScrollView, TextArea } from "native-base";
+import { NativeBaseProvider, Box, Button, Input, ScrollView, TextArea, theme } from "native-base";
 
 import { setupURLPolyfill } from 'react-native-url-polyfill';
 import { SafeAreaView } from 'react-native-safe-area-context';
@@ -10,6 +10,7 @@ import * as Clipboard from 'expo-clipboard';
 import { GiftedChat, Bubble, Send, InputToolbar } from 'react-native-gifted-chat'
 //import react native vector icons
 import Ionicons from '@expo/vector-icons/Ionicons';
+import { VARIABLE } from "@env"
 
 
 setupURLPolyfill();
@@ -64,14 +65,21 @@ export default function App() {
       }
     ]));
 
+
+
     const prompt = `Convert my input from Finglish to Farsi. Don't translate english to farsi, but only convert the english letters to farsi: ${messageText}`;
+
+
     const response = await openai.createChatCompletion({
       model: "gpt-3.5-turbo",
+
       messages: [{ role: 'user', content: prompt }],
       max_tokens: 200,
       temperature: 0,
       stream: false,
     });
+
+
     console.log(response.data.choices[0].message.content);
     const answer = response.data.choices[0].message.content;
     setAnswer(answer);
@@ -162,7 +170,7 @@ export default function App() {
   const bg = "coolGray.800";
 
   return (
-    
+
     <NativeBaseProvider>
       <SafeAreaView style={{ flex: 1 }}>
         <GiftedChat
@@ -181,14 +189,14 @@ export default function App() {
           placeholder='Type your message here...'
           alwaysShowSend
           renderSend={renderSend}
-          // renderInputToolbar={renderInputToolbar}
+        // renderInputToolbar={renderInputToolbar}
         />
 
         <StatusBar style="auto" />
-        </SafeAreaView>
-     
+      </SafeAreaView>
 
-      
+
+
 
     </NativeBaseProvider>
   );
