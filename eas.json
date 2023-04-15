@@ -19,11 +19,7 @@
     },
     "production": {
       "ios": {
-        "resourceClass": "m-medium",
-        "credentialsSource": "local"
-      },
-      "android": {
-        "buildType": "apk"
+        "resourceClass": "m-medium"
       }
     }
   },

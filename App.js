@@ -16,7 +16,7 @@ import { VARIABLE } from "@env"
 setupURLPolyfill();
 
 const configuration = new Configuration({
-  apiKey: "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",
+  apiKey: process.env.OPENAI_API_KEY
 });
 const openai = new OpenAIApi(configuration);
 
@@ -69,7 +69,7 @@ export default function App() {
 
     const prompt = `Convert my input from Finglish to Farsi. Don't translate english to farsi, but only convert the english letters to farsi: ${messageText}`;
 
-
+    
     const response = await openai.createChatCompletion({
       model: "gpt-3.5-turbo",
 
